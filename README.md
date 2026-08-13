@@ -7,27 +7,24 @@ Lightweight event management app with a Django REST backend and a Vite + React f
 - API for events, categories, registrations, users
 - Frontend SPA built with Vite and React
 - Image uploads, RSVP management, admin dashboard
+- MongoDB-backed Django configuration for the primary app database
 
 ## Tech Stack
 
 - Backend: Python, Django, Django REST Framework
 - Frontend: React, Vite, Tailwind CSS
-- Databases: SQLite (Django ORM, development), MongoDB Atlas (MongoEngine, optional)
+- Database: MongoDB via `django-mongodb-backend`
 
 ## Database Architecture
 
-This project supports a **hybrid database setup**:
+This project now uses MongoDB as the primary database for Django models.
 
-- **SQLite / PostgreSQL** — Primary relational database for Django ORM models (Users, Events, Registrations, Categories)
-  - Used for structured data with relationships
-  - Managed via Django migrations
-  
-- **MongoDB** (optional) — Document database for flexible/scalable data storage via MongoEngine
-  - Optional; only connects if `MONGODB_URI` environment variable is set
-  - Can be used for logs, analytics, or document-based features
-  - Requires MongoDB Atlas account for production
+- **MongoDB** — primary app database for events, users, registrations, categories, and settings
+  - Configured in [backend/config/settings.py](backend/config/settings.py)
+  - Uses `django_mongodb_backend`
+  - Controlled by `MONGODB_URI` and optional `MONGODB_DB_NAME`
 
-By default, the project runs with **SQLite only** and works without MongoDB. Enable MongoDB by setting the `MONGODB_URI` environment variable.
+This project no longer uses SQLite as the application database.
 
 ## Quickstart
 
@@ -35,11 +32,12 @@ Prerequisites:
 
 - Python 3.10+
 - Node 16+ / npm or yarn
+- MongoDB running locally or a MongoDB Atlas connection string
 - Git
 
 Backend (development):
 
-1. Create virtualenv and activate it (Windows PowerShell):
+1. Create and activate a virtual environment (Windows PowerShell):
 
 ```powershell
 python -m venv .venv
@@ -52,34 +50,26 @@ python -m venv .venv
 pip install -r backend/requirements.txt
 ```
 
-3. (Optional) Set up MongoDB Atlas for document storage:
+3. Create a `.env` file in the project root or `backend/` with your MongoDB connection string:
 
-   a. Create a free MongoDB Atlas account at [mongodb.com/cloud/atlas](https://mongodb.com/cloud/atlas)
-   
-   b. Create a cluster and database user
-   
-   c. Create a `.env` file in the project root with your MongoDB connection string:
-   
-   ```
-   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
-   ```
-   
-   d. Verify the connection in Django shell:
-   
-   ```powershell
-   cd backend
-   python manage.py shell
-   >>> from django.conf import settings
-   >>> import mongoengine
-   >>> mongoengine.connect(host=settings.MONGODB_URI)
-   ```
+```env
+MONGODB_URI=mongodb://localhost:27017/django_finalproject
+# optional
+MONGODB_DB_NAME=django_finalproject
+```
+
+For MongoDB Atlas:
+
+```env
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/django_finalproject
+```
 
 4. Apply migrations and seed sample data (optional):
 
 ```bash
-python backend/manage.py migrate
-python backend/manage.py loaddata initial_data  # if provided
-python backend/manage.py seed_events            # seeds demo events
+cd backend
+python manage.py migrate
+python manage.py seed_events
 ```
 
 5. Run the development server:
@@ -91,7 +81,7 @@ python manage.py runserver
 
 Frontend (development):
 
-1. Install Node dependencies and run dev server:
+1. Install Node dependencies and run the dev server:
 
 ```bash
 cd frontend
@@ -103,32 +93,31 @@ npm run dev
 
 Running tests:
 
-- Backend: from the repository root run `pytest -q` (uses `pytest.ini` in `backend/`).
-- Frontend: no tests configured by default.
+- Backend: from the repository root run `pytest -q` (uses `pytest.ini` in `backend/`)
+- Frontend: no tests configured by default
 
 Environment variables
 
-Create a `.env` file in the project root with:
+Create a `.env` file in the project root or the `backend/` folder with:
 
-```
-# Django settings
+```env
 DJANGO_SECRET_KEY=your-secret-key
-DEBUG=True  # Set to False in production
-
-# MongoDB (optional - only needed for MongoEngine features)
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database_name
+DEBUG=True
+MONGODB_URI=mongodb://localhost:27017/django_finalproject
+MONGODB_DB_NAME=django_finalproject
 ```
 
 For production, also set:
+
 - `DEBUG=false`
-- `ALLOWED_HOSTS` (in `settings.py`)
-- A proper `DATABASE_URL` for PostgreSQL or other SQL database
-- Secure `DJANGO_SECRET_KEY` (use a strong random value)
+- secure `DJANGO_SECRET_KEY`
+- `ALLOWED_HOSTS` in the Django settings if needed
 
 Deployment notes
 
-- Backend: serve with Gunicorn / uWSGI + reverse proxy (nginx). Collect static files if using Django staticfiles.
-- Frontend: build with `npm run build` and host the generated assets (Vercel, Netlify, or static hosting).
+- Backend: serve with Gunicorn behind a reverse proxy such as Nginx
+- Frontend: build with `npm run build` and host the output on Vercel, Netlify, or another static host
+- MongoDB should be reachable from the deployment environment
 
 Project layout
 
