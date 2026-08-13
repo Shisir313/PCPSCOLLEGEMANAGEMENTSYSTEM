@@ -12,7 +12,22 @@ Lightweight event management app with a Django REST backend and a Vite + React f
 
 - Backend: Python, Django, Django REST Framework
 - Frontend: React, Vite, Tailwind CSS
-- Database: SQLite (development)
+- Databases: SQLite (Django ORM, development), MongoDB Atlas (MongoEngine, optional)
+
+## Database Architecture
+
+This project supports a **hybrid database setup**:
+
+- **SQLite / PostgreSQL** — Primary relational database for Django ORM models (Users, Events, Registrations, Categories)
+  - Used for structured data with relationships
+  - Managed via Django migrations
+  
+- **MongoDB** (optional) — Document database for flexible/scalable data storage via MongoEngine
+  - Optional; only connects if `MONGODB_URI` environment variable is set
+  - Can be used for logs, analytics, or document-based features
+  - Requires MongoDB Atlas account for production
+
+By default, the project runs with **SQLite only** and works without MongoDB. Enable MongoDB by setting the `MONGODB_URI` environment variable.
 
 ## Quickstart
 
@@ -37,7 +52,29 @@ python -m venv .venv
 pip install -r backend/requirements.txt
 ```
 
-3. Apply migrations and seed sample data (optional):
+3. (Optional) Set up MongoDB Atlas for document storage:
+
+   a. Create a free MongoDB Atlas account at [mongodb.com/cloud/atlas](https://mongodb.com/cloud/atlas)
+   
+   b. Create a cluster and database user
+   
+   c. Create a `.env` file in the project root with your MongoDB connection string:
+   
+   ```
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
+   ```
+   
+   d. Verify the connection in Django shell:
+   
+   ```powershell
+   cd backend
+   python manage.py shell
+   >>> from django.conf import settings
+   >>> import mongoengine
+   >>> mongoengine.connect(host=settings.MONGODB_URI)
+   ```
+
+4. Apply migrations and seed sample data (optional):
 
 ```bash
 python backend/manage.py migrate
@@ -45,7 +82,7 @@ python backend/manage.py loaddata initial_data  # if provided
 python backend/manage.py seed_events            # seeds demo events
 ```
 
-4. Run the development server:
+5. Run the development server:
 
 ```bash
 cd backend
@@ -71,7 +108,22 @@ Running tests:
 
 Environment variables
 
-- For production, set at least `DJANGO_SECRET_KEY`, `DEBUG=false`, and a proper `DATABASE_URL` or production DB settings.
+Create a `.env` file in the project root with:
+
+```
+# Django settings
+DJANGO_SECRET_KEY=your-secret-key
+DEBUG=True  # Set to False in production
+
+# MongoDB (optional - only needed for MongoEngine features)
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database_name
+```
+
+For production, also set:
+- `DEBUG=false`
+- `ALLOWED_HOSTS` (in `settings.py`)
+- A proper `DATABASE_URL` for PostgreSQL or other SQL database
+- Secure `DJANGO_SECRET_KEY` (use a strong random value)
 
 Deployment notes
 
