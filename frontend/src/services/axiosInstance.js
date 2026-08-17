@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+// In development (Vite), use relative paths so the proxy handles routing to /api
+// In production, use the configured API URL or fallback to 127.0.0.1:8000
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+                 (import.meta.env.DEV ? '' : 'http://127.0.0.1:8000');
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
