@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    background-color: #F7F8FA;
+    color: #1E293B;
+    scroll-behavior: smooth;
+  }
+  * { box-sizing: border-box; }
+}
+
+@layer components {
+  /* ── Buttons ── */
+  .btn-red {
+    @apply bg-red-gradient text-white font-semibold px-5 py-2.5 rounded-xl transition-all
+           hover:shadow-glow-red hover:-translate-y-0.5 active:translate-y-0
+           disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none
+           text-sm inline-flex items-center justify-center gap-2;
+  }
+  .btn-blue {
+    @apply bg-card-gradient text-white font-semibold px-5 py-2.5 rounded-xl transition-all
+           hover:shadow-glow-blue hover:-translate-y-0.5 active:translate-y-0
+           text-sm inline-flex items-center justify-center gap-2;
+  }
+  .btn-outline-red {
+    @apply border-2 border-pcps-red text-pcps-red hover:bg-pcps-red hover:text-white
+           font-semibold px-5 py-2.5 rounded-xl transition-all hover:-translate-y-0.5
+           text-sm inline-flex items-center justify-center gap-2;
+  }
+  .btn-outline-blue {
+    @apply border-2 border-pcps-blue text-pcps-blue hover:bg-pcps-blue hover:text-white
+           font-semibold px-5 py-2.5 rounded-xl transition-all hover:-translate-y-0.5
+           text-sm inline-flex items-center justify-center gap-2;
+  }
+  .btn-ghost {
+    @apply text-pcps-muted hover:text-pcps-blue hover:bg-pcps-blue-light
+           font-medium px-4 py-2 rounded-xl transition-all text-sm inline-flex items-center justify-center gap-2;
+  }
+
+  /* ── Cards ── */
+  .card {
+    @apply bg-white rounded-2xl shadow-card border border-gray-100 overflow-hidden
+           transition-all duration-300;
+  }
+  .card-hover {
+    @apply card hover:shadow-card-hover hover:-translate-y-1;
+  }
+  .glass-card {
+    @apply backdrop-blur-sm bg-white/10 border border-white/20 rounded-2xl;
+  }
+
+  /* ── Form inputs ── */
+  .form-input {
+    @apply w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm
+           focus:outline-none focus:ring-0 focus:border-pcps-blue
+           hover:border-gray-300 transition-colors bg-white
+           placeholder:text-gray-400;
+  }
+  .form-input-error {
+    @apply form-input border-pcps-red bg-red-50 focus:border-pcps-red;
+  }
+
+  /* ── Layout ── */
+  .page-container {
+    @apply max-w-5xl mx-auto px-4 py-8;
+  }
+  .section-heading {
+    @apply text-2xl font-extrabold text-pcps-blue;
+  }
+
+  /* ── Badges ── */
+  .badge-red   { @apply inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-pcps-red-light text-pcps-red ring-1 ring-pcps-red/20; }
+  .badge-blue  { @apply inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-pcps-blue-light text-pcps-blue ring-1 ring-pcps-blue/20; }
+  .badge-green { @apply inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-green-50 text-green-700 ring-1 ring-green-200; }
+  .badge-gray  { @apply inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-gray-100 text-gray-600 ring-1 ring-gray-200; }
+
+  /* ── Hero gradient background ── */
+  .hero-bg {
+    background: linear-gradient(135deg, #153D7A 0%, #1B4F9B 45%, #CC1122 100%);
+    position: relative;
+  }
+  .hero-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top right, rgba(204,17,34,0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at bottom left, rgba(255,255,255,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* ── Shimmer loading skeleton ── */
+  .skeleton {
+    @apply bg-gray-200 rounded-xl animate-pulse;
+  }
+
+  /* ── Animated gradient text ── */
+  .gradient-text {
+    background: linear-gradient(90deg, #1B4F9B, #CC1122, #1B4F9B);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+  }
+}
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #F1F5F9; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #1B4F9B; }
+
+/* ── Page transition utility ── */
+.page-enter { animation: fadeUp 0.4s ease both; }
+
+/* ── Stagger animation delays ── */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.10s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.20s; }
+.stagger-5 { animation-delay: 0.25s; }
