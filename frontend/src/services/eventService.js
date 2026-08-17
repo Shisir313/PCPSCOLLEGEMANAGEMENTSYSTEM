@@ -1,6 +1,13 @@
 import axiosInstance from './axiosInstance';
 
 function normalizeError(error) {
+  console.error('API Error Details:', {
+    message: error.message,
+    status: error.response?.status,
+    statusText: error.response?.statusText,
+    data: error.response?.data,
+    url: error.config?.url,
+  });
   if (error.response?.data) {
     return Object.assign(new Error('API error'), { data: error.response.data, status: error.response.status });
   }
@@ -11,7 +18,10 @@ export async function getEvents(params = {}) {
   try {
     const { data } = await axiosInstance.get('/api/events/', { params });
     return data;
-  } catch (error) { throw normalizeError(error); }
+  } catch (error) { 
+    console.error('getEvents failed:', error);
+    throw normalizeError(error); 
+  }
 }
 
 export async function getEvent(id) {
